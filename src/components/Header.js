@@ -2,19 +2,18 @@ import React from 'react'
 import "./Header.css"
 import MenuIcon from '@material-ui/icons/Menu'
 import { IconButton } from '@material-ui/core'
-import formimage from './images/logo.png'
+import formimage from '../images/logo.png'
 import SearchIcon from '@material-ui/icons/Search'
 import AppsIcon from '@material-ui/icons/Apps'
 import Avatar from '@material-ui/core/Avatar'
-import avatarimage from './images/2.jpg'
+import avatarimage from '../images/2.jpg'
+import TemporaryDrawer from './TemporaryDrawer'
 
 function Header() {
     return (
         <div className='header'>
             <div className="header_info">
-                <IconButton>
-                    <MenuIcon />
-                </IconButton>
+                <TemporaryDrawer />
                 <img src={formimage} style={{ height: '40px', width: '40px' }} className='form_image' />
                 <div className="info">
                     Forms
