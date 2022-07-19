@@ -3,12 +3,19 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { Icon, IconButton } from '@material-ui/core'
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore'
 import './Template.css'
-
+import uuid from 'react-uuid'
+import { useNavigate } from 'react-router-dom'
 import blank from '../images/logo.png'
 import party from '../images/logo.png'
 import contact from '../images/logo.png'
 
 function Template() {
+    let navigate = useNavigate()
+    const createForm = () => {
+        const id_ = uuid()
+        navigate("/form/" + id_)
+    }
+
     return (
         <div className='template_section'>
             <div className="template_top">
@@ -24,7 +31,7 @@ function Template() {
                 </div>
             </div>
             <div className="template_body">
-                <div className="card">
+                <div className="card" onClick={createForm}>
                     <img src={blank} className='card_image' alt="no image" />
                     <p className='card_title'>Blank</p>
                 </div>
