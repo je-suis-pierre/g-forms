@@ -39,6 +39,71 @@ function Question_form() {
         }]
     )
 
+    function changeQuestion(text, i) {
+        var newQuestion = [...questions];
+        newQuestion[i].questionText = text;
+        setQuestions(newQuestion);
+        console.log(newQuestion)
+    }
+
+    function changeOptionValue(text, i, j) {
+        var optionsQuestion = [...questions]
+        optionsQuestion[i].options[j].optionText = text
+        setQuestions(optionsQuestion)
+    }
+
+    function addQuestionType(i, type) {
+        let qs = [...questions];
+        console.log(type)
+        qs[i].questionType = type
+        setQuestions(qs)
+    }
+
+    function removeOption(i, j) {
+        var RemoveOptionQuestion = [...questions]
+        if (RemoveOptionQuestion[i].options.length > 1) {
+            RemoveOptionQuestion[i].options.splice(j, 1)
+            setQuestions(RemoveOptionQuestion)
+            console.log(i + "__" + j)
+        }
+    }
+
+    function addOption(i) {
+        var optionsOfQuestion = [...questions]
+        if (optionsOfQuestion[i].options.length < 5) {
+            optionsOfQuestion[i].options.push({ optionText: 'Option ' + (optionsOfQuestion[i].options.length + 1) })
+        } else {
+            console.log('Max 5 questions')
+        }
+        setQuestions(optionsOfQuestion)
+    }
+
+    function copyQuestion(i) {
+        let qs = [...questions]
+        var newQuestion = qs[i]
+        setQuestions([...questions, newQuestion])
+    }
+
+    function deleteQuestion(i) {
+        let qs = [...questions]
+        if (questions.length > 1) {
+            qs.splice(i, 1)
+        }
+        setQuestions(qs)
+    }
+
+    function requiredQuestion(i) {
+        var reqQuestion = [...questions]
+        reqQuestion[i].required = !removeOption[i].required
+        console.log(reqQuestion[i].required + ' ' + i)
+        setQuestions(reqQuestion)
+    }
+
+    function addMoreQuestionField() {
+        setQuestions([...questions,
+        { questionText: 'Question', questionType: 'radio', options: [{ optionText: "Option 1" }], open: true, required: false }])
+    }
+
     function questionsUI() {
         return questions.map((ques, i) => (
             <div>
@@ -69,16 +134,17 @@ function Question_form() {
                                 ))}
                             </div>
                         ) : ''}
+
                     </AccordionSummary>
                     <div className="question_boxes">
                         <AccordionDetails className='add_question'>
                             <div className="add_question_top">
-                                <input type="text" className="question" placeholder='Question' value={ques.questionText} />
+                                <input type="text" className="question" placeholder='Question' value={ques.questionText} onChange={(e) => { changeQuestion(e.target.value, i) }} />
                                 <CropOriginalIcon style={{ color: '#5f6368' }} />
                                 <Select className='select' style={{ color: '#5f6368', fontSize: '13px' }}>
-                                    <MenuItem id='text' value='text'><SubjectIcon style={{ marginRight: '10px' }} />Paragraph</MenuItem>
-                                    <MenuItem id='checkbox' value='checkbox'><CheckBoxIcon style={{ marginRight: '10px', color: '#70757a' }} checked />Check Box</MenuItem>
-                                    <MenuItem id='radio' value='Radio'><Radio style={{ marginRight: '10px', color: '#70757a' }} checked /> Multiple Choice</MenuItem>
+                                    <MenuItem id='text' value='text' onClick={() => { addQuestionType(i, 'text') }}><SubjectIcon style={{ marginRight: '10px' }} />Paragraph</MenuItem>
+                                    <MenuItem id='checkbox' value='Checkbox' onClick={() => { addQuestionType(i, 'checkbox') }}><CheckBoxIcon style={{ marginRight: '10px', color: '#70757a' }} checked />Check Box</MenuItem>
+                                    <MenuItem id='radio' value='Radio' onClick={() => { addQuestionType(i, 'radio') }}><Radio style={{ marginRight: '10px', color: '#70757a' }} checked /> Multiple Choice</MenuItem>
                                 </Select>
                             </div>
                             {ques.options.map((op, j) => (
@@ -89,12 +155,11 @@ function Question_form() {
                                             <ShortTextIcon style={{ marginRight: '10px' }} />
                                     }
                                     <div>
-                                        <input type="text" className="text_input" placeholder='option' value={ques.options[j].optionText} />
+                                        <input type="text" className="text_input" placeholder='option' value={ques.options[j].optionText} onChange={(e) => { changeOptionValue(e.target.value, i, j) }} />
                                     </div>
-                                    <CropOriginalIcon aria-label='delete'>
-                                    </CropOriginalIcon>
-                                    <IconButton>
-                                        <CloseIcon />
+                                    <CropOriginalIcon style={{ color: '#5f6368' }} />
+                                    <IconButton aria-label='delete'>
+                                        <CloseIcon onClick={() => { removeOption(i, j) }} />
                                     </IconButton>
                                 </div>
                             ))}
@@ -110,7 +175,7 @@ function Question_form() {
                                         } label={
                                             <div>
                                                 <input type='text' className='text_input' style={{ fontSize: '13px', width: '60px' }} placeholder='Add other' />
-                                                <Button size='small' style={{ textTransform: 'none', color: '#4285f4', fontSize: '13px', fontWeight: '600' }}>Add Option</Button>
+                                                <Button size='small' onClick={() => { addOption(i) }} style={{ textTransform: 'none', color: '#4285f4', fontSize: '13px', fontWeight: '600' }}>Add Option</Button>
                                             </div>
                                         } />
                                     </div>
@@ -124,20 +189,26 @@ function Question_form() {
                                     </Button>
                                 </div>
                                 <div className="add_question_bottom">
-                                    <IconButton aria-label='Copy'>
+                                    <IconButton aria-label='Copy' onClick={() => { copyQuestion(i) }}>
                                         <FilterNoneIcon />
                                     </IconButton>
-                                    <IconButton aria-label='delete'>
+                                    <IconButton aria-label='delete' onClick={() => { deleteQuestion(i) }}>
                                         <BsTrash />
                                     </IconButton>
                                     <span style={{ color: '#5f6368', fontSize: '13px' }}>Required</span>
-                                    <Switch name='checkedA' color='primary' checked></Switch>
+                                    <Switch name='checkedA' color='primary' onClick={() => { requiredQuestion(i) }} checked></Switch>
                                     <IconButton>
                                         <MoreVertIcon />
                                     </IconButton>
                                 </div>
                             </div>
                         </AccordionDetails>
+                        <div className="question_edit">
+                            <AddCircleOutlineIcon onClick={addMoreQuestionField} className='edit' />
+                            <OndemandVideoIcon className='edit' />
+                            <CropOriginalIcon className='edit' />
+                            <TextFieldsIcon className='edit' />
+                        </div>
                     </div>
                 </Accordion>
             </div>
